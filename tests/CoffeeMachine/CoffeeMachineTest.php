@@ -14,8 +14,7 @@ class CoffeeMachineTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals(42, 4 + 2);
     }
 
-    public function test_autoload()
-    {
+    public function test_autoload(){
         $coffeeMachine = new CoffeeMachine();
 
         $this->assertNotNull($coffeeMachine);
