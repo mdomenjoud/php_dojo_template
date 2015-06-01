@@ -11,8 +11,52 @@ class CoffeeMachineTest extends \PHPUnit_Framework_TestCase {
      */
     private $coffeeMachine;
 
+    /**
+     * @var EmailNotifier
+     */
+    private $emailNotifierMock;
+
+    /**
+     * @var BeverageQuantityChecker
+     */
+    private $beverageQuantityCheckerMock;
+
     public function setup(){
-        $this->coffeeMachine = new CoffeeMachine();
+
+        $this->emailNotifierMock = $this->getMockBuilder('CoffeeMachine\\EmailNotifier')
+            ->getMock();
+        $this->beverageQuantityCheckerMock = $this->getMockBuilder('CoffeeMachine\\BeverageQuantityChecker')
+            ->getMock();
+        $this->coffeeMachine = new CoffeeMachine($this->emailNotifierMock, $this->beverageQuantityCheckerMock);
+    }
+
+    public function test_EmailNotifier(){
+        //Given
+        $this->emailNotifierMock = $this->getMockBuilder('CoffeeMachine\\EmailNotifier')
+            ->getMock();
+
+        $this->emailNotifierMock->expects($this->once())
+            ->method('notifyMissingDrink')
+            ->with($this->equalTo('Orange'));
+
+        //When
+        $this->emailNotifierMock->notifyMissingDrink("Orange");
+    }
+
+    public function test_BeverageQuantityChecker(){
+        //Given
+        $this->beverageQuantityCheckerMock =
+            $this->getMockBuilder('CoffeeMachine\\BeverageQuantityChecker')
+            ->getMock();
+
+        $this->beverageQuantityCheckerMock->method('isEmpty')
+            ->willReturn(false);
+
+        //When
+        $result = $this->beverageQuantityCheckerMock->isEmpty("Orange");
+
+        //Then
+        $this->assertEquals(false, $result);
     }
 
     public function test_makeCommand_ShouldReturnCoffeeCommand(){
@@ -47,5 +91,6 @@ class CoffeeMachineTest extends \PHPUnit_Framework_TestCase {
         //Then
         $this->assertEquals("M:Unknown drink type", $result);
     }
+
 }
  
